@@ -1,34 +1,81 @@
-const mongoose = require("mongoose");
+const { json } = require("express");
+const UserJwt = require("../model/userModel");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please provide a name"],
-    unique: true,
-    trim: true,
-    minlength: [3, "Please provide a valid name"],
-    maxlength: [15, "Name cannot be morethan 15 charectors"],
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      "Please enter a valid email",
-    ],
-    password:{
-        type:String,
-        required:true,
-        minlength:[6,"Password must be atleast 6 charectors"],
-        trim:true
-    }
+//get all user details
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await UserJwt.find({});
+    res.status(200) / json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
-},{
-    timestamps:true
-  });
+};
+//get a single user details
 
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const user = await UserJwt.findById(id);
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
-  const UserJwt = mongoose.model("user",userSchema)
+//create a single user
 
-  module.exports = UserJwts
+const createUser = async (req, res) => {
+  try {
+    const user = await UserJwt.create(req.body);
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//update a user
+
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const user = await UserJwt.findByIdAndUpdate(id, req.body);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: `No user found with the id ${id}` });
+    }
+    const updatedUser = await UserJwt.findById(id);
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//delete user
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const user = await UserJwt.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).json({ message: `No detail with the id${id}` });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser
+};
