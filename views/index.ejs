@@ -1,0 +1,16 @@
+<%- include('./layout/header') %>
+<div class="container text-center rounded-3 border-4 bg-body-tertiary p-4 h-auto w-50">
+    <h1>Welcome to <b class="bold fw-bolder w-100 bg-dark rounded-1 text-white-50">E-Blog</b></h1>
+    <!-- Display this content for logged-out or new users -->
+    <div class="row">
+        <div class="col-md-6 mt-5">
+            <a href="/api/users/login" class="btn btn-primary btn-lg btn-block">Login</a>
+            <p class="mt-4">If you are an existing user</p>
+        </div>
+        <div class="col-md-6 mt-5">
+            <a href="/api/users/signup" class="btn btn-dark btn-lg btn-block">Sign Up</a>
+            <p class="mt-4">If you are new to this site</p>
+        </div>
+    </div>
+</div>
+<%- include('./layout/footer') %>
